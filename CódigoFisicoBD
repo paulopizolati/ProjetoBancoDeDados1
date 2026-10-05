@@ -1,0 +1,63 @@
+# ProjetoBancoDeDados1
+Projeto Between In The Lines - Escola de Inglês 
+
+CREATE TABLE aluno (
+id_aluno BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+matricula VARCHAR(40) NOT NULL UNIQUE,
+nome VARCHAR(120) NOT NULL,
+email VARCHAR(160) NOT NULL UNIQUE,
+telefone VARCHAR(20)
+);
+
+CREATE TABLE nivel_ingles (
+id_nivel BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+codigo VARCHAR(10) NOT NULL UNIQUE,
+descricao VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE professor (
+id_professor BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+nome VARCHAR(120) NOT NULL,
+email VARCHAR(160) NOT NULL UNIQUE,
+especialidade VARCHAR(100)
+);
+
+CREATE TABLE turma (
+id_turma BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+id_nivel BIGINT NOT NULL REFERENCES nivel_ingles(id_nivel),
+id_professor BIGINT NOT NULL REFERENCES professor(id_professor),
+horario VARCHAR(50) NOT NULL,
+ano_semestre VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE matricula (
+id_matricula BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+id_aluno BIGINT NOT NULL REFERENCES aluno(id_aluno),
+id_turma BIGINT NOT NULL REFERENCES turma(id_turma),
+data_matricula DATE NOT NULL,
+situacao VARCHAR(20) NOT NULL CHECK (situacao IN ('ATIVA', 'CONCLUIDA',
+'TRANCADA'))
+);
+
+CREATE TABLE aula (
+id_aula BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+id_turma BIGINT NOT NULL REFERENCES turma(id_turma),
+data_aula DATE NOT NULL,
+conteudo VARCHAR(255)
+);
+CREATE TABLE frequencia (
+id_frequencia BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+id_aula BIGINT NOT NULL REFERENCES aula(id_aula),
+id_aluno BIGINT NOT NULL REFERENCES aluno(id_aluno),
+presente BOOLEAN NOT NULL
+);
+
+CREATE TABLE mensalidade (
+id_mensalidade BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+id_aluno BIGINT NOT NULL REFERENCES aluno(id_aluno),
+valor NUMERIC(10,2) NOT NULL,
+data_vencimento DATE NOT NULL,
+data_pagamento DATE NULL,
+situacao VARCHAR(20) NOT NULL CHECK (situacao IN ('PENDENTE', 'PAGO',
+'ATRASADO'))
+);
